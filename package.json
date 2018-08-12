@@ -1,0 +1,22 @@
+{
+  "name": "meizitu",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
+    "express": "^4.16.3",
+    "koa": "^2.5.2",
+    "koa-static": "^5.0.0",
+    "koa2-cors": "^2.0.5",
+    "superagent": "^3.8.3",
+    "superagent-charset": "^1.2.0"
+  }
+}
