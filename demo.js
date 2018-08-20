@@ -39,6 +39,7 @@ app.get('/index', function(req, res) {
                     thumbSrc: thumbImgSrc
                 });
             });
+            console.log(items)
             res.json({ code: 200, msg: "", data: items });
         });
 });
