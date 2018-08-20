@@ -87,10 +87,7 @@ app.get('/index', function(req, res) {
                 }
                 res.json({ code: 200, msg: "", data: items });
             })
-            
-            
-          
-            
+            console.log(items)
         });
 });
 app.get('/show', (req, res) => {
