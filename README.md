@@ -16,4 +16,5 @@ npm install
 node demo.js
 根据提示在浏览器输入:http://127.0.0.1:8081/index
 /index返回取到json
+<br/>
 /index.html在网页上显示图片
