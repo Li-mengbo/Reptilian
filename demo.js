@@ -2,7 +2,7 @@ var superagent = require('superagent');
 var charset = require('superagent-charset');
 charset(superagent);
 var express = require('express');
-var baseUrl = 'https://www.qqtn.com/'; //输入任何网址都可以
+var baseUrl = 'https://fabiaoqing.com/'; //输入任何网址都可以
 const cheerio = require('cheerio');
 var fs = require('fs')
 var path = require('path')
@@ -22,11 +22,11 @@ app.get('/index', function(req, res) {
     var page = req.query.page;
     type = type || 'weixin';
     page = page || '1';
-    var route = `tx/${type}tx_${page}.html`
+    var route = `bqb/detail/id/30562.html`
         //网页页面信息是gb2312，所以chaeset应该为.charset('gb2312')，一般网页则为utf-8,可以直接使用.charset('utf-8')
         console.log(baseUrl + route)
     superagent.get(baseUrl + route)
-        .charset('gb2312')
+        .charset('UTF-8')
         .end(function(err, sres) {
             var items = [];
             if (err) {
@@ -34,72 +34,62 @@ app.get('/index', function(req, res) {
                 res.json({ code: 400, msg: err, sets: items });
                 return;
             }
+            // 解析html
             var $ = cheerio.load(sres.text);
-            $('div.g-main-bg ul.g-gxlist-imgbox li a').each(function(idx, element) {
+            $('div.image div.swiper-wrapper .swiper-slide a').each(function(idx, element) {
                 var $element = $(element);
                 var $subElement = $element.find('img');
-                var thumbImgSrc = $subElement.attr('src');
                 items.push({
                     title: $(element).attr('title'),
                     href: $element.attr('href'),
-                    thumbSrc: thumbImgSrc
+                    thumbSrc: $subElement.attr('data-original')
                 });
             });
-            fs.access(path.join(__dirname, '/img.json'), fs.constants.F_OK, err => {
-                if (err) { // 文件不存在
-                    fs.writeFile(path.join(__dirname,'/img.json'), JSON.stringify([
-                        {
-                            route,
-                            items
-                        }
-                    ]), err => {
-                        if(err) {
-                            console.log(err)
-                            return false
-                        }
-                        console.log('保存成功')
-                    })
-                } else {
-                    fs.readFile(path.join(__dirname, '/img.json'), (err, data) => {
-                        if (err) {
-                            console.log(err)
-                            return false
-                        }
-                        data = JSON.parse(data.toString())
-                        let exist = data.some((page, index) => {
-                            return page.route == route
-                        })
-                        if (!exist) {
-                            fs.writeFile(path.join(__dirname, 'img.json'), JSON.stringify([
-                                ...data,
-                                {
-                                    route,
-                                    items
-                                },
-                            ]), err => {
-                                if (err) {
-                                    console.log(err)
-                                    return false
-                                }
-                            })
-                        }
-                    })
-                }
-                res.json({ code: 200, msg: "", data: items });
-            })
-            console.log(items)
+            // fs.access(path.join(__dirname, '/img.json'), fs.constants.F_OK, err => {
+            //     if (err) { // 文件不存在
+            //         fs.writeFile(path.join(__dirname,'/img.json'), JSON.stringify([
+            //             {
+            //                 route,
+            //                 items
+            //             }
+            //         ]), err => {
+            //             if(err) {
+            //                 console.log(err)
+            //                 return false
+            //             }
+            //             console.log('保存成功')
+            //         })
+            //     } else {
+            //         fs.readFile(path.join(__dirname, '/img.json'), (err, data) => {
+            //             if (err) {
+            //                 console.log(err)
+            //                 return false
+            //             }
+            //             data = JSON.parse(data.toString())
+            //             let exist = data.some((page, index) => {
+            //                 return page.route == route
+            //             })
+            //             if (!exist) {
+            //                 fs.writeFile(path.join(__dirname, 'img.json'), JSON.stringify([
+            //                     ...data,
+            //                     {
+            //                         route,
+            //                         items
+            //                     },
+            //                 ]), err => {
+            //                     if (err) {
+            //                         console.log(err)
+            //                         return false
+            //                     }
+            //                 })
+            //             }
+            //         })
+            //     }
+            // })
+            // res.json({ code: 200, msg: "", items });
+            // console.log(items)
         });
 });
-app.get('/show', (req, res) => {
-    fs.readFile(path.join(__dirname, 'img.json'), (err, data) => {
-        if (err) {
-            console.log(err)
-            return false
-        }
-        res.json(data.toString())
-        
-    })
-})
 var server = app.listen(8081, function() {
 
     var host = server.address().address
