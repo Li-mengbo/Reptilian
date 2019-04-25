@@ -10,10 +10,10 @@
 */
 module.exports = {
   url: 'https://fabiaoqing.com/',
-  route: 'biaoqing/lists/page/',
+  route: 'tag/detail/id/2/page/',
   page: '1',
   dom: 'div#container div.tagbqppdiv a',
-  pathUrl: 'D:/表情1',
-  typeUrl: '热门',
-  totalNo: '30'
+  pathUrl: 'C:/表情',
+  typeUrl: '蘑菇头',
+  totalNo: '1'
 }

@@ -19,6 +19,15 @@ if (!fs.existsSync(savePath)) {
     console.log(`主文件夹已存在：${savePath}`)
 }
 
+// 判断相册是否存在
+let folderPath = `${savePath}/${config.typeUrl}`
+if (fs.existsSync(folderPath)) {
+  console.log(`已存在：${config.typeUrl}`)
+} else {
+  fs.mkdirSync(folderPath)
+  console.log(`已生成：${config.typeUrl}`)
+}
+
 const main = async page => {
     var route = `${config.route}/${ page }.html`
     //网页页面信息是gb2312，所以chaeset应该为.charset('gb2312')，一般网页则为utf-8,可以直接使用.charset('utf-8')
@@ -32,7 +41,7 @@ const main = async page => {
         }
         // 解析html
         var $ = cheerio.load(sres.text);
-        $('div#container div.tagbqppdiv a').each(function(idx, element) {
+        $(config.dom).each(function(idx, element) {
             var $element = $(element);
             console.log('=>>>>>>>>>>>>>>>>>',  $element.find('img').attr('data-original'))
             var $subElement = $element.find('img');
@@ -58,8 +67,8 @@ const downloadAlbumList = async (list) => {
     }
     // 判断本页相册是否下载完毕 
     if (index === list.length) {
-      console.log(`下载完成，共${index}个相册。========================== `)
-      if (currentPageNum < 1) {
+      console.log(`第${currentPageNum}页下载完成，共${index}个相册。========================== `)
+      if (currentPageNum < config.totalNo) {
         // 进行下一页的相册爬取
         main(++currentPageNum)
       }
@@ -69,15 +78,8 @@ const downloadAlbumList = async (list) => {
 const downloadAlbum = async album => {
     let type = album.thumbSrc.substr(-3)
     let name = Math.random().toString().slice(-6);
-    // 判断相册是否存在
-    let folderPath = `${savePath}/${name}.${type}`
-    if (fs.existsSync(folderPath)) {
-      console.log(`已存在：${name}===${album.title}`)
-    } else {
-      // fs.mkdirSync(folderPath)
-      console.log(`》》》 生成：${name}`)
-      await downloadImage(album.thumbSrc, `${savePath}/${name}.${type}`)
-    }
+    console.log(`》》》 生成：${name}`)
+    await downloadImage(album.thumbSrc, `${folderPath}/${name}.${type}`)
   }
 
 const downloadImage =  async (imageSrc, fileName) => {
